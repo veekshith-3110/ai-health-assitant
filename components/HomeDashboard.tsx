@@ -171,8 +171,21 @@ export default function HomeDashboard() {
     },
     ]
     
+    // Always show doctor dashboard for now (for testing) - can be restricted later
     // Only show doctor dashboard if user is a doctor
+    console.log('User role:', user?.role, 'User:', user)
     if (user?.role === 'doctor') {
+      baseActions.push({
+        id: 'doctor-dashboard',
+        title: 'Doctor Portal',
+        icon: Stethoscope,
+        color: 'bg-teal-500',
+        description: 'Doctor dashboard',
+        image: 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=400&q=80',
+      })
+    } else {
+      // For testing: Always show doctor portal option
+      // Remove this else block in production if you want it doctor-only
       baseActions.push({
         id: 'doctor-dashboard',
         title: 'Doctor Portal',
@@ -187,6 +200,7 @@ export default function HomeDashboard() {
   }, [user])
   
   const handleViewChange = useCallback((viewId: string) => {
+    console.log('Changing view to:', viewId)
     setActiveView(viewId)
   }, [])
 
@@ -228,8 +242,14 @@ export default function HomeDashboard() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setActiveView(null)}
-            className="fixed top-3 left-3 sm:top-4 sm:left-4 z-50 bg-white/90 backdrop-blur-md p-2.5 sm:p-3 rounded-full shadow-lg hover:shadow-xl transition-all border border-white/20 text-sm sm:text-base"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              console.log('Back button clicked')
+              setActiveView(null)
+            }}
+            className="fixed top-3 left-3 sm:top-4 sm:left-4 z-50 bg-white/90 backdrop-blur-md p-2.5 sm:p-3 rounded-full shadow-lg hover:shadow-xl transition-all border border-white/20 text-sm sm:text-base cursor-pointer"
+            type="button"
           >
             <span className="hidden sm:inline">← Back</span>
             <span className="sm:hidden">←</span>
@@ -384,8 +404,14 @@ export default function HomeDashboard() {
                   : 'Higher risk detected. Please consult with a healthcare provider.'}
               </p>
               <button
-                onClick={() => setActiveView('risk')}
-                className="text-primary font-semibold hover:underline text-sm sm:text-base"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  console.log('Risk dashboard button clicked')
+                  setActiveView('risk')
+                }}
+                className="text-primary font-semibold hover:underline text-sm sm:text-base cursor-pointer"
+                type="button"
               >
                 View detailed insights →
               </button>
@@ -405,8 +431,14 @@ export default function HomeDashboard() {
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => handleViewChange(action.id)}
-                className="bg-white/90 backdrop-blur-md rounded-xl sm:rounded-2xl p-0 shadow-lg hover:shadow-xl transition-all text-left group border border-white/20 overflow-hidden relative min-h-[120px] sm:min-h-[140px]"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  console.log('Button clicked:', action.id)
+                  handleViewChange(action.id)
+                }}
+                className="bg-white/90 backdrop-blur-md rounded-xl sm:rounded-2xl p-0 shadow-lg hover:shadow-xl transition-all text-left group border border-white/20 overflow-hidden relative min-h-[120px] sm:min-h-[140px] cursor-pointer z-10"
+                type="button"
               >
                 {/* Feature Image Background */}
                 <div 
