@@ -93,6 +93,35 @@ npm run build
 npm start
 ```
 
+### Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id_here
+```
+
+**Getting Google OAuth Credentials:**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable Google+ API
+4. Go to "Credentials" → "Create Credentials" → "OAuth client ID"
+5. Configure the OAuth consent screen
+6. Add authorized JavaScript origins and redirect URIs
+7. Copy the Client ID to your `.env.local` file
+
+### Deployment
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+**Quick Deploy to Vercel:**
+1. Push your code to GitHub
+2. Import your repository on [Vercel](https://vercel.com)
+3. Add environment variables in Vercel dashboard
+4. Deploy!
+
+**Build Status:** ✅ Production build passes successfully
+
 ## Project Structure
 
 ```

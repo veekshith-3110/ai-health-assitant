@@ -32,7 +32,7 @@ export async function loadMediterraneanPlants(): Promise<MediterraneanPlant[]> {
     if (response.ok) {
       const data = await response.json()
       mediterraneanPlantsCache = data.plants || []
-      return mediterraneanPlantsCache
+      return mediterraneanPlantsCache || []
     }
   } catch (error) {
     console.warn('Could not load Mediterranean plants from API, using fallback data', error)
@@ -40,6 +40,7 @@ export async function loadMediterraneanPlants(): Promise<MediterraneanPlant[]> {
 
   // Fallback: return empty array if dataset not available
   // The dataset will be loaded when the Python script is run
+  mediterraneanPlantsCache = []
   return []
 }
 
@@ -85,7 +86,13 @@ export function convertToMedicinalPlant(
 ): {
   name: string
   scientificName: string
-  localNames: Record<string, string>
+  localNames: {
+    en: string
+    kn?: string
+    ta?: string
+    te?: string
+    hi?: string
+  }
   medicinalUses: string[]
   partsUsed: string[]
   benefits: string[]
@@ -113,8 +120,8 @@ export function convertToMedicinalPlant(
   if (uses) {
     medicinalUses = uses
       .split(/[.,;]/)
-      .map(u => u.trim())
-      .filter(u => u.length > 0)
+      .map((u: string) => u.trim())
+      .filter((u: string) => u.length > 0)
       .slice(0, 5)
   }
   
@@ -124,7 +131,7 @@ export function convertToMedicinalPlant(
   
   // Parse parts used
   const partsUsed = partUsed 
-    ? partUsed.split(/[,\/]/).map(p => p.trim()).filter(p => p.length > 0)
+    ? partUsed.split(/[,\/]/).map((p: string) => p.trim()).filter((p: string) => p.length > 0)
     : ['Leaves', 'Flowers', 'Stem'] // Default
   
   // Determine if edible based on method of use

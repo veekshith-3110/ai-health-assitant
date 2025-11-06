@@ -6,8 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useHealthStore, Language, findUserByCredentials } from '@/lib/store'
 import { 
   Phone, Lock, Mail, Eye, EyeOff, Globe, ArrowRight, Heart, Shield, 
-  UserPlus, LogIn, Google, Facebook, Github, Twitter, CheckCircle2,
-  KeyRound, HelpCircle, AlertCircle, Sparkles, Zap
+  UserPlus, LogIn, CheckCircle, Key, HelpCircle, AlertCircle, Users
 } from 'lucide-react'
 import { analytics } from '@/lib/analytics'
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google'
@@ -419,15 +418,15 @@ export default function LoginPage() {
                 />
               )}
               
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 rounded-xl hover:border-primary transition-colors bg-white"
-                onClick={() => setError('Facebook login coming soon!')}
-              >
-                <Facebook className="w-5 h-5 text-blue-600" />
-                <span className="font-medium text-gray-700">Facebook</span>
-              </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 rounded-xl hover:border-primary transition-colors bg-white"
+                  onClick={() => setError('Facebook login coming soon!')}
+                >
+                  <Users className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-gray-700">Facebook</span>
+                </motion.button>
             </div>
           </motion.div>
 
@@ -457,7 +456,7 @@ export default function LoginPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-4"
                   >
-                    <KeyRound className="w-12 h-12 text-primary mx-auto mb-2" />
+                    <Key className="w-12 h-12 text-primary mx-auto mb-2" />
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Reset Password</h3>
                     <p className="text-gray-600 text-sm">Enter your email to receive a password reset link</p>
                   </motion.div>
@@ -735,7 +734,7 @@ export default function LoginPage() {
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         className="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg flex items-center gap-2"
                       >
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-5 h-5 text-green-500" />
                         <p className="text-sm text-green-800">{success}</p>
                       </motion.div>
                     )}
