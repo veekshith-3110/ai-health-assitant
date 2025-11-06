@@ -297,6 +297,10 @@ export const useHealthStore = create<HealthStore>()(
       loadUserData: (userId: string) => {
         const savedData = loadUserDataFromStorage(userId)
         if (savedData) {
+          // Restore user object if it exists in saved data (including role)
+          if (savedData.user) {
+            set({ user: savedData.user })
+          }
           // Ensure healthRecordFiles are loaded properly
           const files = savedData.healthRecordFiles || []
           console.log('Loading user data for', userId, 'Files found:', files.length)

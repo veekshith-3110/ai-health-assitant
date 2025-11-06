@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Onboarding from '@/components/Onboarding'
 import HomeDashboard from '@/components/HomeDashboard'
 import EntryAnimation from '@/components/EntryAnimation'
+import { useHealthStore } from '@/lib/store'
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -12,6 +13,7 @@ export default function Home() {
   const [showEntryAnimation, setShowEntryAnimation] = useState(false)
   const [hasCheckedLogin, setHasCheckedLogin] = useState(false)
   const router = useRouter()
+  const { user, setUser, loadUserData } = useHealthStore()
 
   useEffect(() => {
     // Only check login status in browser
@@ -26,31 +28,48 @@ export default function Home() {
         const loginStatus = localStorage.getItem('isLoggedIn')
         const onboardingStatus = localStorage.getItem('onboarding_completed')
         
-        // Check both localStorage and ensure we're not on login page
-        // Only set logged in if explicitly 'true' AND we have a valid session
-        if (loginStatus === 'true') {
-          // Double check by verifying we have user data
-          const hasUserData = localStorage.getItem('health-storage')
-          if (hasUserData) {
-            setIsLoggedIn(true)
-            if (onboardingStatus === 'true') {
-              setHasCompletedOnboarding(true)
+            // Check both localStorage and ensure we're not on login page
+            // Only set logged in if explicitly 'true' AND we have a valid session
+            if (loginStatus === 'true') {
+              // Try to load user from storage
+              const users = JSON.parse(localStorage.getItem('health-users') || '[]')
+              let foundUser = null
+              
+              // Find the most recent user or check if user is already in store
+              if (user && user.id) {
+                foundUser = user
+                loadUserData(user.id)
+              } else if (users.length > 0) {
+                // Try to load the last user
+                const lastUserId = users[users.length - 1]
+                const userData = JSON.parse(localStorage.getItem(`health-data-${lastUserId}`) || '{}')
+                if (userData.user) {
+                  foundUser = userData.user
+                  setUser(foundUser)
+                  loadUserData(foundUser.id)
+                }
+              }
+              
+              if (foundUser) {
+                setIsLoggedIn(true)
+                if (onboardingStatus === 'true') {
+                  setHasCompletedOnboarding(true)
+                } else {
+                  setHasCompletedOnboarding(false)
+                }
+              } else {
+                // No user data, clear login but don't redirect - show dashboard with login button
+                localStorage.removeItem('isLoggedIn')
+                setIsLoggedIn(false)
+                setHasCompletedOnboarding(false)
+                setShowEntryAnimation(false)
+              }
             } else {
+              // Not logged in - show dashboard with login button in header
+              setIsLoggedIn(false)
               setHasCompletedOnboarding(false)
+              setShowEntryAnimation(false)
             }
-          } else {
-            // No user data, clear login but don't redirect - show dashboard with login button
-            localStorage.removeItem('isLoggedIn')
-            setIsLoggedIn(false)
-            setHasCompletedOnboarding(false)
-            setShowEntryAnimation(false)
-          }
-        } else {
-          // Not logged in - show dashboard with login button in header
-          setIsLoggedIn(false)
-          setHasCompletedOnboarding(false)
-          setShowEntryAnimation(false)
-        }
       } catch (error) {
         // If any error, show dashboard with login button
         console.error('Error checking login status:', error)

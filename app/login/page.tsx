@@ -178,7 +178,8 @@ export default function LoginPage() {
             : {}
           
           if (savedData.user?.password === password || !savedData.user?.password) {
-            userData = existingUser
+            // Use saved user data to preserve role and other fields
+            userData = savedData.user || existingUser
             setUser(userData)
             useHealthStore.getState().loadUserData(userData.id)
           } else {
