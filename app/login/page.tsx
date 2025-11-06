@@ -37,6 +37,8 @@ export default function LoginPage() {
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [forgotEmail, setForgotEmail] = useState('')
   const [authMethod, setAuthMethod] = useState<'email' | 'phone' | 'social'>('email')
+  const [userRole, setUserRole] = useState<'patient' | 'doctor'>('patient')
+  const [doctorId, setDoctorId] = useState('')
   const { language, setLanguage, setUser, user } = useHealthStore()
   const router = useRouter()
 
@@ -205,6 +207,8 @@ export default function LoginPage() {
           name: name,
           authProvider: 'email' as const,
           password: password,
+          role: userRole,
+          doctorId: userRole === 'doctor' ? doctorId : undefined,
         }
         
         setUser(userData)
@@ -529,6 +533,80 @@ export default function LoginPage() {
                         placeholder="Enter your full name"
                         className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all bg-white"
                         required
+                      />
+                    </motion.div>
+                  )}
+
+                  {/* Role Selection (Signup only) */}
+                  {!isLogin && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 }}
+                    >
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <Users className="w-4 h-4 inline mr-2" />
+                        Account Type
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <motion.button
+                          type="button"
+                          onClick={() => {
+                            setUserRole('patient')
+                            setDoctorId('')
+                            setError('')
+                          }}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`py-3 px-4 rounded-xl border-2 font-semibold transition-all ${
+                            userRole === 'patient'
+                              ? 'border-primary bg-primary/10 text-primary'
+                              : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          }`}
+                        >
+                          Patient
+                        </motion.button>
+                        <motion.button
+                          type="button"
+                          onClick={() => {
+                            setUserRole('doctor')
+                            setError('')
+                          }}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`py-3 px-4 rounded-xl border-2 font-semibold transition-all ${
+                            userRole === 'doctor'
+                              ? 'border-primary bg-primary/10 text-primary'
+                              : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          }`}
+                        >
+                          Doctor
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Doctor ID (Signup only, for doctors) */}
+                  {!isLogin && userRole === 'doctor' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <Key className="w-4 h-4 inline mr-2" />
+                        Doctor License/Registration ID *
+                      </label>
+                      <input
+                        type="text"
+                        value={doctorId}
+                        onChange={(e) => {
+                          setDoctorId(e.target.value)
+                          setError('')
+                        }}
+                        placeholder="Enter your medical license/registration ID"
+                        className="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all bg-white"
+                        required={userRole === 'doctor'}
                       />
                     </motion.div>
                   )}

@@ -29,6 +29,7 @@ import AccountMenu from './AccountMenu'
 import ElectronicHealthRecord from './ElectronicHealthRecord'
 import VoiceCommandPanel from './VoiceCommandPanel'
 import EmergencyAlert from './EmergencyAlert'
+import DoctorDashboard from './DoctorDashboard'
 import { useTranslation } from '@/hooks/useTranslation'
 import { analytics } from '@/lib/analytics'
 import { voiceCommandHandler } from '@/lib/voiceCommands'
@@ -102,7 +103,8 @@ export default function HomeDashboard() {
     }
   }, [riskScore])
 
-  const quickActions = useMemo(() => [
+  const quickActions = useMemo(() => {
+    const baseActions = [
     {
       id: 'symptom',
       title: 'Describe Symptoms',
@@ -167,7 +169,22 @@ export default function HomeDashboard() {
       description: 'Store health records',
       image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80',
     },
-  ], [])
+    ]
+    
+    // Only show doctor dashboard if user is a doctor
+    if (user?.role === 'doctor') {
+      baseActions.push({
+        id: 'doctor-dashboard',
+        title: 'Doctor Portal',
+        icon: Stethoscope,
+        color: 'bg-teal-500',
+        description: 'Doctor dashboard',
+        image: 'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=400&q=80',
+      })
+    }
+    
+    return baseActions
+  }, [user])
   
   const handleViewChange = useCallback((viewId: string) => {
     setActiveView(viewId)
@@ -231,6 +248,7 @@ export default function HomeDashboard() {
           {activeView === 'doctors' && <DoctorDirectory />}
           {activeView === 'medicine-info' && <MedicineInfo />}
           {activeView === 'health-records' && <ElectronicHealthRecord />}
+          {activeView === 'doctor-dashboard' && <DoctorDashboard />}
         </motion.div>
         </div>
       </div>

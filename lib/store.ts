@@ -54,6 +54,8 @@ export interface User {
   phone?: string
   authProvider: 'google' | 'phone' | 'email'
   password?: string // For login verification
+  role?: 'patient' | 'doctor' // User role
+  doctorId?: string // For doctors: license/registration ID
 }
 
 export interface HealthRecordFile {
